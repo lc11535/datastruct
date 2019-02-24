@@ -1,2 +1,2 @@
 # datastruct
-data struct 
+demo codes for data struct 
