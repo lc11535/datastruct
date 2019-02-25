@@ -236,6 +236,35 @@ void PostOrderTraverse(BiTNode* root) {
     VISIT(root);
 }
 
+// 后序遍历 - 递推
+void PostOrderTraverseNonRecursion(BiTNode* root) {
+    if (root == NULL) return;
+
+    std::stack<BiTNode*> stk;
+    stk.push(root);
+    BiTNode* last = root;
+
+    while(!stk.empty()){
+        BiTNode* p = stk.top();
+
+        // 左右孩子都访问完了，则访问自己
+        if ( (p->lchild == NULL && p->rchild == NULL) || // 叶子结点
+             (p->rchild == NULL && last == p->lchild) || // 右孩子为NULL，上次访问的是左孩子
+             (p->rchild == last)                         // 上次访问的就是右孩子
+        ){
+            VISIT(p)
+            last = p;
+            stk.pop();
+        }
+        
+        // 分别将右孩子，左孩子入栈
+        else{
+            if(p->rchild != NULL) stk.push(p->rchild); // 注意先加 右孩子
+            if(p->lchild != NULL) stk.push(p->lchild);
+        }
+    }
+}
+
 
 
 int main()
@@ -258,9 +287,12 @@ int main()
 
     printf("InOrderTraverseNonRecursion\n");
     InOrderTraverseNonRecursion(tree.root);
-       
+
     printf("PostOrderTraverse\n");
     PostOrderTraverse(tree.root);
+
+    printf("PostOrderTraverseNonRecursion\n");
+    PostOrderTraverseNonRecursion(tree.root);
 
     return 0;
 }
