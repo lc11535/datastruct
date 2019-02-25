@@ -22,18 +22,7 @@ typedef struct BiTree{
     BiTNode* root;
 }BiTree;
 
-std::vector<BiTNode*> visitFlag;
-#define VISIT(node) {printf("%d\n", node->e); visitFlag.push_back(node); }
-
-bool HasVisited(BiTNode* node){
-    for(int i=0; i<visitFlag.size();i++){
-        if (visitFlag[i] == node ) { 
-            return true;
-        }
-    }
-
-    return false;
-}
+#define VISIT(node) {printf("%d\n", node->e);}
 
 
 // 生成二叉树，按照层序结构，依次从终端读取数据，生成完全二叉树。读取时出错结束。
@@ -158,8 +147,6 @@ void PreOrderTraverse(BiTNode* root) {
 void PreOrderTraverseNonRecursion(BiTNode* root) {
     if (root == NULL) return;
 
-    visitFlag.clear();
-
     std::stack<BiTNode*> stk;
     stk.push(root);
 
@@ -168,7 +155,6 @@ void PreOrderTraverseNonRecursion(BiTNode* root) {
         BiTNode* p = stk.top();
         VISIT(p);
         stk.pop();
-
 
         if (p->rchild != NULL ) { // 先压右，pop的时候就先pop的左，即先访问的左
             stk.push(p->rchild);
@@ -180,6 +166,7 @@ void PreOrderTraverseNonRecursion(BiTNode* root) {
     }
 }
 
+
 // 中序遍历 - 递归
 void InOrderTraverse(BiTNode* root) {
     if (root == NULL) return;
@@ -187,6 +174,30 @@ void InOrderTraverse(BiTNode* root) {
     InOrderTraverse(root->lchild);
     VISIT(root);
     InOrderTraverse(root->rchild);
+}
+
+// 中序遍历 - 递推
+void InOrderTraverseNonRecursion(BiTNode* root) {
+    if (root == NULL) return;
+
+    std::stack<BiTNode*> stk;
+    BiTNode* p = root;
+
+    while( p || ! stk.empty() ){
+
+        if (p != NULL) {
+            stk.push(p);
+            p = p->lchild;
+        }
+        else{
+            p = stk.top();
+            stk.pop();
+            VISIT(p);
+            p = p->rchild;
+        }
+
+    }
+
 }
 
 // 后序遍历 - 递归
@@ -218,6 +229,9 @@ int main()
     printf("InOrderTraverse\n");
     InOrderTraverse(tree.root);
 
+    printf("InOrderTraverseNonRecursion\n");
+    InOrderTraverseNonRecursion(tree.root);
+   
     printf("PostOrderTraverse\n");
     PostOrderTraverse(tree.root);
 
