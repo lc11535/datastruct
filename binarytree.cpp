@@ -166,6 +166,31 @@ void PreOrderTraverseNonRecursion(BiTNode* root) {
     }
 }
 
+// 先序遍历 - 递推 - 借助 stack  方法2
+void PreOrderTraverseNonRecursion2(BiTNode* root) {
+    if (root == NULL) return;
+
+    std::stack<BiTNode*> stk;
+    BiTNode* p = root;
+    stk.push(p);
+
+    while(! stk.empty() ){
+
+        if (p != NULL){
+            VISIT(p);
+            if(p->lchild != NULL) stk.push(p->lchild);
+            p = p->lchild;
+        }
+        else{
+            p = stk.top();
+            stk.pop();            
+            if(p->rchild != NULL) stk.push(p->rchild);
+            p = p->rchild;
+        }
+
+    }
+}
+
 
 // 中序遍历 - 递归
 void InOrderTraverse(BiTNode* root) {
@@ -182,17 +207,19 @@ void InOrderTraverseNonRecursion(BiTNode* root) {
 
     std::stack<BiTNode*> stk;
     BiTNode* p = root;
+    stk.push(p);
 
-    while( p || ! stk.empty() ){
+    while(! stk.empty() ){
 
         if (p != NULL) {
-            stk.push(p);
+            if (p->lchild != NULL) stk.push(p->lchild);
             p = p->lchild;
         }
         else{
             p = stk.top();
             stk.pop();
             VISIT(p);
+            if(p->rchild != NULL) stk.push(p->rchild);
             p = p->rchild;
         }
 
@@ -224,14 +251,14 @@ int main()
     PreOrderTraverse(tree.root);
 
     printf("PreOrderTraverseNonRecursion\n");
-    PreOrderTraverseNonRecursion(tree.root);
+    PreOrderTraverseNonRecursion2(tree.root);
 
     printf("InOrderTraverse\n");
     InOrderTraverse(tree.root);
 
     printf("InOrderTraverseNonRecursion\n");
     InOrderTraverseNonRecursion(tree.root);
-   
+       
     printf("PostOrderTraverse\n");
     PostOrderTraverse(tree.root);
 
