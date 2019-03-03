@@ -16,6 +16,8 @@
  *  Dijkstra 每次能求出源点v到其它所有顶点的最短距离
  *  Dijkstra 求所有顶点之间的最短路径，则需要对每个顶点做一次Dijkstra，复杂度为O(n^3)
  *  Dijkstra 求任意指定两点之间的最短路径，也需要对起点做一次Dijkstra, 算法复杂度也是 O(n^2)
+ * 
+ *  附录：参考链接 https://www.cnblogs.com/wangyuliang/p/9216365.html
  */
 
 #include <stdio.h>
