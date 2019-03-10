@@ -50,6 +50,7 @@ void InitOrderedSSTable(SSTable* pSSTable){
     }
 }
 
+///////////////////////////////////////////////////////////////
 // BinarySearch 二分查找
 // 返回值：e的位置，-1 表示没有找到
 int BinarySearch(SSTable t, ElemType e){
@@ -72,10 +73,11 @@ int BinarySearch(SSTable t, ElemType e){
     return -1;
 }
 
+///////////////////////////////////////////////////////////////
 // Nearly Optimal Search Tree 次优查找树
 
 typedef struct NearOptimalSearchNode{
-    int data;
+    int data;          // 保存元素的index
     NearOptimalSearchNode* pLChild;
     NearOptimalSearchNode* pRChild;
 }NearOptimalSearchNode;
@@ -85,7 +87,7 @@ typedef struct NearOptimalSearchTree{
 }NearOptimalSearchTree;
 
 typedef struct{
-    ElemType elem[MAX_ARRAY_SIZE];
+    char elem[MAX_ARRAY_SIZE];
     float weight[MAX_ARRAY_SIZE];
     int length;
 }SSWTable;
@@ -104,7 +106,7 @@ void Display(NearOptimalSearchNode* root){
     Display(root->pRChild);
 }
 
-void NOP(NearOptimalSearchNode* root, float sw[], int low, int high){
+void NOS(NearOptimalSearchNode* root, float sw[], int low, int high){
 
     // 寻找使得左右两边 权重累加值 的差值最小的元素min
     float min_d = sw[high] - sw[low]; // 初始化差值 设为最大
@@ -128,16 +130,17 @@ void NOP(NearOptimalSearchNode* root, float sw[], int low, int high){
 
     if( low < min){
         root->pLChild = (NearOptimalSearchNode*) malloc(sizeof(NearOptimalSearchNode));
-        NOP(root->pLChild, sw, low, min-1);
+        NOS(root->pLChild, sw, low, min-1);
     }
 
     if(high > min){
         root->pRChild = (NearOptimalSearchNode*) malloc(sizeof(NearOptimalSearchNode));
-        NOP(root->pRChild, sw, min+1, high);
+        NOS(root->pRChild, sw, min+1, high);
     }
 }
 
-void NearOptimalSearch(SSWTable table){
+// 构造次优查找树
+NearOptimalSearchTree* CreateNearlyOptimalSearchTree(SSWTable table){
 
     // 计算权重累加值
     float sw[MAX_ARRAY_SIZE] = {0};
@@ -147,13 +150,26 @@ void NearOptimalSearch(SSWTable table){
     }
 
     // 递归构造次优二叉树
-    NearOptimalSearchTree tree;
-    tree.root = (NearOptimalSearchNode*) malloc(sizeof(NearOptimalSearchNode));
-    NOP(tree.root, sw, 0, table.length-1);
+    NearOptimalSearchTree* tree = (NearOptimalSearchTree*) malloc(sizeof(NearOptimalSearchTree));
+    tree->root = (NearOptimalSearchNode*) malloc(sizeof(NearOptimalSearchNode));
+    NOS(tree->root, sw, 0, table.length-1);
 
-    // 输出
-    Display(tree.root);
+    return tree;
 }
+
+int NearlyOptimalSearch(SSWTable table, char data, NearOptimalSearchNode* root){
+    if(root == NULL) return -1;
+
+    if( table.elem[ root->data  ] == data ){
+        return root->data;
+    }
+
+    int ret = NearlyOptimalSearch(table, data, root->pLChild);
+    if (ret >= 0) return ret;
+
+    return NearlyOptimalSearch(table, data, root->pRChild);
+}
+
 
 
 
@@ -167,12 +183,21 @@ int main()
 */
     SSWTable wt;
     float w[9] = {1,1,2,5,3,4,4,3,5};
-    for(int i = 0; i < 9; i++ ) wt.weight[i] = w[i];
+    char e[9] = {'A','B','C','D','E','F','G','H','I'};
+    for(int i = 0; i < 9; i++ ) {
+        wt.elem[i] = e[i];
+        wt.weight[i] = w[i];
+    }
     wt.length = 9;
-    NearOptimalSearch(wt);
+    
+    // 构造次优查找树
+    NearOptimalSearchTree* tree = CreateNearlyOptimalSearchTree(wt);
+    Display(tree->root);
 
-
-
+    // 通过次优查找树，进行查找
+    printf("\n%d\n", NearlyOptimalSearch(wt, 'A', tree->root));
+    printf("%d\n", NearlyOptimalSearch(wt, 'C', tree->root));
+    printf("%d\n", NearlyOptimalSearch(wt, 'I', tree->root));
 
     return 0;
 }
