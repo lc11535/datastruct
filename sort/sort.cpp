@@ -77,7 +77,7 @@ void InsertSort(int Array[], int size)
 void BinarySort(int Array[], int size)
 {
     // 从第二个元素开始，即 Array[1] 开始，往前折半插入
-    for (int i = 2; i < size; i++){
+    for (int i = 1; i < size; i++){
         int elem = Array[i];
         int low = 0;
         int high = i -1;
