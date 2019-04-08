@@ -177,7 +177,7 @@ void Dijkstra(int v){
 
         // 更新 dist
         for(int j = 0; j < N; j++){
-            if(in[j] == 0 && dist[j] > (dist[min] + graph.weight[min][j]) ) { // // 如果源点通过min中转到j的距离更近，则更新
+            if(in[j] == 0 && dist[j] > (dist[min] + graph.weight[min][j]) ) { // 如果源点通过min中转到j的距离更近，则更新
                 dist[j] = dist[min] + graph.weight[min][j];
             }
         }

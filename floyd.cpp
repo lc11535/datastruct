@@ -11,11 +11,11 @@
  * 
  *  Floyd 每次能求出指定的任意两个点的最短路径
  *  Floyd 求所有顶点之间的最短路径，复杂度也是O(n^3)
- *  Floyd 求任意指定两点之间的最短路径，复杂度是 O(n), n来自不断把所有顶点当做中转顶点。
+ *  Floyd 求任意指定两点之间的最短路径，复杂度是 O(n^3), n来自不断把所有顶点当做中转顶点。
  * 
  *  Dijkstra 每次能求出源点v到其它所有顶点的最短距离
  *  Dijkstra 求所有顶点之间的最短路径，则需要对每个顶点做一次Dijkstra，复杂度为O(n^3)
- *  Dijkstra 求任意指定两点之间的最短路径，也需要对起点做一次Dijkstra, 算法复杂度也是 O(n^2)
+ *  Dijkstra 求任意指定两点之间的最短路径，也需要对起点做一次Dijkstra, 算法复杂度也是 O(n^3)
  * 
  *  附录：参考链接 https://www.cnblogs.com/wangyuliang/p/9216365.html
  */
@@ -114,22 +114,8 @@ void Floyd(){
 
 // 计算顶点from 到 顶点to 之间的最短路径
 void Floyd(int from, int to){
-
-    // 初始化
-    e[from][to] = graph.weight[from][to];
-
-    // 依次加入顶点
-    for(int v=0; v<N; v++){
-
-        // 重新计算任意两点之间的最小距离
-        if(e[from][to] > e[from][v] + e[v][to]){ // 判断通过v中转是否更近
-            printf("add %d, %d -> %d\n", v, e[from][to], e[from][v] + e[v][to]);
-            e[from][to] = e[from][v] + e[v][to];
-        }
-    }
-
-    // 输出结果
-    printf("final: %d -> %d = %d\n", from, to, e[from][to]);
+    Floyd();
+    printf("from:%d -> to:%d = %d\n",from, to, e[from][to]);
 }
 
 int main()
